@@ -1,3 +1,5 @@
+---
+
 ```markdown
 # WineApp 🍷
 
@@ -100,6 +102,6 @@ El proyecto está bajo la [Licencia MIT](./LICENSE). Puedes usarlo, modificarlo 
 Este proyecto está diseñado exclusivamente para fines educativos y para explorar las tecnologías mencionadas.
 ```
 
-
+---
 
 
