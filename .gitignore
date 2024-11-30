@@ -1,0 +1,45 @@
+# Gradle
+*.iml
+.gradle
+/local.properties
+.gradle
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# IDEs y entornos de desarrollo
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+
+# Logs
+*.log
+
+# Archivos sensibles
+.env
+*.keystore
+
+# Cache y temporales
+.cache/
+tmp/
+
+# APKs
+*.apk
+*.ap_
+
+# Firebase y Crashlytics
+/crashlytics/
+.fabric/
+
+# Archivos específicos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de prueba
+/test-results/
+coverage/
+

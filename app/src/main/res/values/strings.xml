@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Wine App</string>
+    <string name="errorDataLoaded">Sin Datos, intente de nuevo</string>
+    <string name="default_font">serif-monospace</string>
+</resources>
