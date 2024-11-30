@@ -1,7 +1,12 @@
 package com.kodeleku.wineapp
 
+import android.net.http.HttpException
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresExtension
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -14,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setupAdapter()
         setupRecyclerView()
         setupRetrofit()
+        setupSwipeRefresh()
     }
 
     // Declaramos la función setupAdapter
@@ -49,6 +56,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupSwipeRefresh() {
+        binding.srlWines.setOnRefreshListener {
+            // Inicia la recarga llamando a la función de obtención de datos
+            getWines()
+        }
+    }
+
     private fun setupRetrofit(){
         // Instanciación y seleccionar construcción:
         val retrofit =Retrofit.Builder()
@@ -62,17 +76,42 @@ class MainActivity : AppCompatActivity() {
         service = retrofit.create(WineService::class.java)
     }
 
+    /**
+     * Método getWines anotado con @RequiresExtension para limitar su uso a Android 12 (API 31, versión 7) o superior.
+     * Actualmente, no está diseñado para ejecutarse en versiones inferiores.
+     *
+     * NOTA: Para soportar versiones de Android anteriores, se debe implementar un manejo condicional de versiones
+     * en los lugares donde se llama este método.
+     */
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     private fun getWines() {
-        lifecycleScope.launch (Dispatchers.IO) {
-            // Función temporal para recoger items localmente hasta llegar al tema de RETROFIT
-            //val wines = getLocalWines()
+        //val wines = getLocalWines()
+        lifecycleScope.launch {
+            // Mostrar la animación de SwipeRefresh al iniciar la solicitud
+            binding.srlWines.isRefreshing = true
+            try {
+                // Consumir el servicio en el contexto de IO
+                val wines = withContext(Dispatchers.IO) {
+                    service.getRedWines()
+                }
+                // Usamos el método "submitList(Lista)", método propio de la clase "ListAdapter"
+                adapter.submitList(wines)
 
-            // Consumir el webService
-            val wines = service.getRedWines()
-
-            // Usamos el método "submitList(Lista)", método propio de la clase "ListAdapter"
-            withContext(Dispatchers.Main){
-                adapter.submitList(wines) // Actualizar la lista de vinos
+            } catch (e: HttpException) {
+                // Manejar errores relacionados con el servidor
+                Log.e("MainActivity", "HTTP Error: ${e.message}", e)
+                Toast.makeText(this@MainActivity, "Error de servidor: ${e.message}", Toast.LENGTH_SHORT).show()
+            } catch (e: IOException) {
+                // Manejar errores de conexión o red
+                Log.e("MainActivity", "Network Error: ${e.message}", e)
+                Toast.makeText(this@MainActivity, "Error de red, verifica tu conexión", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                // Manejar cualquier otro tipo de error
+                Log.e("MainActivity", "Unexpected Error: ${e.message}", e)
+                Toast.makeText(this@MainActivity, "Ocurrió un error inesperado", Toast.LENGTH_SHORT).show()
+            } finally {
+                // Asegurarse de ocultar la animación de SwipeRefresh sin importar el resultado
+                binding.srlWines.isRefreshing = false
             }
         }
     }
@@ -161,9 +200,23 @@ class MainActivity : AppCompatActivity() {
         )
     )
 
+    /**
+     * Método onResume anotado con @RequiresExtension para limitar su uso a Android 12 (API 31, versión 7) o superior.
+     * Actualmente, la funcionalidad de `getWines()` no maneja versiones inferiores.
+     *
+     * NOTA: Para ampliar la compatibilidad, es necesario agregar un bloque condicional en el método
+     * que verifique la versión de Android y proporcione una alternativa adecuada para dispositivos con
+     * API menor a 31 o extensión inferior a 7.
+     */
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override fun onResume() {
         super.onResume()
-        getWines()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            getWines()
+        } else {
+            // Alternativa para versiones más antiguas
+        }
     }
+
 
 }

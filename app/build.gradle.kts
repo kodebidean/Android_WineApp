@@ -51,6 +51,9 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
 
+    // SWIPE REFRESH LAYOUT
+    implementation(libs.androidx.swiperefreshlayout)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
