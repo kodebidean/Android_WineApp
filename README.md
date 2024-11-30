@@ -1,7 +1,3 @@
----
-
-### **README.md (Ajustado)**
-
 ```markdown
 # WineApp 🍷
 
