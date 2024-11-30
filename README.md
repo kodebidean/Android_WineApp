@@ -1,6 +1,5 @@
 ---
 
-```markdown
 # WineApp 🍷
 
 WineApp es un proyecto educativo de Android diseñado para aprender e implementar conceptos clave del desarrollo móvil moderno, incluyendo:
@@ -100,7 +99,6 @@ El proyecto está bajo la [Licencia MIT](./LICENSE). Puedes usarlo, modificarlo 
 ### Nota
 
 Este proyecto está diseñado exclusivamente para fines educativos y para explorar las tecnologías mencionadas.
-```
 
 ---
 
